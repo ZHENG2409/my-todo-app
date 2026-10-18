@@ -9,9 +9,15 @@ function App() {
   const loadTodos = async () => {
     try {
       const res = await getTodos();
-      setTodos(res.data);
+      if (Array.isArray(res.data)) {
+        setTodos(res.data);
+      } else {
+        console.error("请求发错地方了，拿到的不是数组！");
+        setTodos([]);
+      }
     } catch (error) {
-      console.error("获取数据失败，请检查后端是否启动", error);
+      console.error("获取数据报错：", error);
+      setTodos([]);
     }
   };
 
@@ -39,7 +45,7 @@ function App() {
   return (
     <div className="app-container">
       <div className="todo-card">
-        <h1 className="title">🌸 我的软萌待办 🌸</h1>
+        <h1 className="title">我的待办</h1>
 
         <div className="input-group">
           <input
@@ -66,11 +72,11 @@ function App() {
                     checked={todo.completed}
                     onChange={() => handleToggle(todo)}
                   />
-                  <span className="custom-checkbox">🎀</span>
+                  <span className="custom-checkbox">⭐</span>
                 </label>
                 <span className="todo-text">{todo.title}</span>
                 <button className="delete-btn" onClick={() => handleDelete(todo.id)}>
-                  删除 🗑️
+                  删除 
                 </button>
               </li>
             ))

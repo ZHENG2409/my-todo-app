@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: 'https://qoafcsukxdge.sealoshzh.site/api',
 });
 
 export const getTodos = () => api.get('/todos');
