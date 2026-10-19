@@ -1,11 +1,11 @@
-/* 整体背景：淡粉到淡蓝的渐变 */
+/* 整体背景：淡粉*/
 .app-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 10vh;
-  background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 50%, #c2e9fb 100%);
+  background:  #ffdde1 40%;
   font-family: 'Nunito', 'Comic Sans MS', 'PingFang SC', sans-serif;
 }
 

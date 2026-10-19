@@ -1,89 +1,23 @@
-import { useEffect, useState } from 'react';
-import { getTodos, createTodo, updateTodo, deleteTodo } from './services/api';
-import './App.css'; // 引入可爱的样式
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Home from './pages/Home';
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  const [input, setInput] = useState('');
-
-  const loadTodos = async () => {
-    try {
-      const res = await getTodos();
-      if (Array.isArray(res.data)) {
-        setTodos(res.data);
-      } else {
-        console.error("请求发错地方了，拿到的不是数组！");
-        setTodos([]);
-      }
-    } catch (error) {
-      console.error("获取数据报错：", error);
-      setTodos([]);
-    }
-  };
-
-  useEffect(() => {
-    loadTodos();
-  }, []);
-
-  const handleAdd = async () => {
-    if (!input.trim()) return;
-    await createTodo(input.trim());
-    setInput('');
-    loadTodos();
-  };
-
-  const handleToggle = async (todo) => {
-    await updateTodo(todo.id, { title: todo.title, completed: !todo.completed });
-    loadTodos();
-  };
-
-  const handleDelete = async (id) => {
-    await deleteTodo(id);
-    loadTodos();
-  };
+  // 检查本地有没有 Token，有就认为是登录状态
+  const isLoggedIn = !!localStorage.getItem('token');
 
   return (
-    <div className="app-container">
-      <div className="todo-card">
-        <h1 className="title">我的待办</h1>
-
-        <div className="input-group">
-          <input
-            className="todo-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-            placeholder="今天想做点什么呢？(。・ω・。)"
-          />
-          <button className="add-btn" onClick={handleAdd}>
-            添加 ✨
-          </button>
-        </div>
-
-        <ul className="todo-list">
-          {todos.length === 0 ? (
-            <div className="empty-tip">暂时没有待办哦，快添加一个吧~ ☁️</div>
-          ) : (
-            todos.map((todo) => (
-              <li key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-                <label className="checkbox-container">
-                  <input
-                    type="checkbox"
-                    checked={todo.completed}
-                    onChange={() => handleToggle(todo)}
-                  />
-                  <span className="custom-checkbox">⭐</span>
-                </label>
-                <span className="todo-text">{todo.title}</span>
-                <button className="delete-btn" onClick={() => handleDelete(todo.id)}>
-                  删除 
-                </button>
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* 登录页 */}
+        <Route path="/login" element={<Login />} />
+        {/* 主页：如果没登录，强行跳回登录页 */}
+        <Route
+          path="/"
+          element={isLoggedIn ? <Home /> : <Navigate to="/login" replace />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
